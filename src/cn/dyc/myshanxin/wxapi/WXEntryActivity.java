@@ -19,19 +19,18 @@ import android.net.NetworkInfo.State;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.MediaStore.MediaColumns;
 import android.provider.Settings;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
-
-import cn.dyc.myshanxin.Aboutus;
-import cn.dyc.myshanxin.AppUtil;
 import cn.dyc.myshanxin.R;
+import cn.dyc.myshanxin.client.view.AppUtil;
+
 import com.tencent.mm.sdk.openapi.BaseReq;
 import com.tencent.mm.sdk.openapi.BaseResp;
 import com.tencent.mm.sdk.openapi.IWXAPI;
@@ -230,6 +229,7 @@ public class WXEntryActivity extends Activity implements OnClickListener,
 				: type + System.currentTimeMillis();
 	}
 
+	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode != RESULT_OK) { // 此处的 RESULT_OK 是系统自定义得一个常量
 			Toast.makeText(WXEntryActivity.this, "操作取消", Toast.LENGTH_SHORT)
@@ -247,7 +247,7 @@ public class WXEntryActivity extends Activity implements OnClickListener,
 				bm = MediaStore.Images.Media.getBitmap(resolver, originalUri); // 显得到bitmap图片
 
 				// 这里开始的第二部分，获取图片的路径：
-				String[] proj = { MediaStore.Images.Media.DATA };
+				String[] proj = { MediaColumns.DATA };
 
 				// 好像是android多媒体数据库的封装接口，具体的看Android文档
 				Cursor cursor = managedQuery(originalUri, proj, null, null,
@@ -255,7 +255,7 @@ public class WXEntryActivity extends Activity implements OnClickListener,
 
 				// 按我个人理解 这个是获得用户选择的图片的索引值
 				int column_index = cursor
-						.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+						.getColumnIndexOrThrow(MediaColumns.DATA);
 
 				// 将光标移至开头 ，这个很重要，不小心很容易引起越界
 				cursor.moveToFirst();
@@ -310,6 +310,7 @@ public class WXEntryActivity extends Activity implements OnClickListener,
 
 	}
 
+	@Override
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
 
@@ -386,6 +387,7 @@ public class WXEntryActivity extends Activity implements OnClickListener,
 				.setTitle("提示")
 				.setCancelable(false)
 				.setPositiveButton("配置", new DialogInterface.OnClickListener() {
+					@Override
 					public void onClick(DialogInterface dialog, int id) {
 
 						// 进入无线网络配置界面
@@ -395,6 +397,7 @@ public class WXEntryActivity extends Activity implements OnClickListener,
 					}
 				})
 				.setNegativeButton("退出", new DialogInterface.OnClickListener() {
+					@Override
 					public void onClick(DialogInterface dialog, int id) {
 						WXEntryActivity.this.finish();
 					}
